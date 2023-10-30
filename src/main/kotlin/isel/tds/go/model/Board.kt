@@ -7,36 +7,42 @@ enum class Piece {
     val other: Piece get() = if (this == WHITE) BLACK else WHITE
 }
 class Board(
-    val boardCells: Map<Position, Piece?> = (0..<BOARD_SIZE).flatMap { row ->
-        ('A'..<('A' + BOARD_SIZE)).map { col ->
-            Position(row, col) to null
-        }
-    }.toMap(),
+//    val boardCells: Map<Position, Piece?> = (1..BOARD_SIZE * BOARD_SIZE).associate { Position(it, 'A' + (it - 1)) to null },
+    val boardCells: Map<Position, Piece?> = emptyMap(),
     val turn: Piece = Piece.WHITE
 )
 
-fun Board.play() {
-    TODO()
+fun Board.canPlay(pos: Position): Boolean {
+    return this.boardCells[pos] == null
+}
+
+fun Board.play(pos:Position):Board {
+
+    val newBoardCells = boardCells.toMutableMap()
+    newBoardCells[pos] = this.turn
+
+    return Board(newBoardCells, turn.other)
 }
 
 fun Board.show() {
-    var colCount = 0
-    var rowCount = 0
-    var firstLine = "  "
-    for (i in 0..< BOARD_SIZE) {
+    var firstLine = " "
+    for (i in 0.. BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
     }
     println(firstLine)
-    print("$rowCount ")
-    this.boardCells.values.forEach { pos ->
-        print("${pos ?: " . "}")
-        if (colCount == BOARD_SIZE - 1 && rowCount < BOARD_SIZE - 1) {
-            rowCount++
-            println()
-            print("$rowCount ")
-            colCount = -1
+    for (i in 0..<BOARD_SIZE) {
+        print(BOARD_SIZE - i)
+        for (j in 65..65 + BOARD_SIZE) {
+            if (boardCells[Position(i, j.toChar())] == null) {
+                print(" . ")
+            }
+            else if (boardCells[Position(i, j.toChar())] == Piece.WHITE) {
+                print(" O ")
+            }
+            else {
+                print(" # ")
+            }
         }
-        colCount++
+        println()
     }
-    println()
 }

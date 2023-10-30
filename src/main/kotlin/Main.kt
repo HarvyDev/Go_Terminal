@@ -3,5 +3,6 @@ import isel.tds.go.model.show
 
 fun main() {
     val board = Board()
-    board.show()
+    val map = emptyMap<Int, Int>()
+    println(65.toChar())
 }

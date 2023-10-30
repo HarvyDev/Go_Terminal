@@ -1,5 +1,18 @@
 package isel.tds.go.model
-class Position(val row:Int, val col:Char)
+data class Position(val row:Int, val col:Char) {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Position) return false
+        return row == other.row && col == other.col
+    }
+
+    override fun hashCode(): Int {
+        var result = row
+        result = 31 * result + col.hashCode()
+        return result
+    }
+}
 
 
 fun String.toPosition(): Position {
