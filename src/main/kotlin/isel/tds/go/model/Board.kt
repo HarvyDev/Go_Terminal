@@ -1,5 +1,7 @@
 package isel.tds.go.model
 
+import java.lang.IllegalArgumentException
+
 const val BOARD_SIZE = 9
 const val BOARD_CELLS = BOARD_SIZE * BOARD_SIZE
 enum class Piece {
@@ -18,6 +20,13 @@ fun Board.canPlay(pos: Position): Boolean {
 
 fun Board.play(pos:Position):Board {
 
+    require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
+    require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
+
+    if (!canPlay(pos)) {
+        return this
+    }
+
     val newBoardCells = boardCells.toMutableMap()
     newBoardCells[pos] = this.turn
 
@@ -30,8 +39,8 @@ fun Board.show() {
         firstLine += " " + ('A' + i) + " "
     }
     println(firstLine)
-    for (i in 0..<BOARD_SIZE) {
-        print(BOARD_SIZE - i)
+    for (i in BOARD_SIZE downTo 1) {
+        print(i)
         for (j in 65..65 + BOARD_SIZE) {
             if (boardCells[Position(i, j.toChar())] == null) {
                 print(" . ")
