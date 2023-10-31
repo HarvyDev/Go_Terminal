@@ -4,16 +4,6 @@ import isel.tds.go.model.Board
 import isel.tds.go.model.play
 import isel.tds.go.model.toPosition
 
-//interface Command {
-//    fun newBoard(): Board
-//    fun play(): Board
-//    fun pass(): Board
-//    fun save()
-//    fun load(): Board
-//    fun exit()
-//}
-
-
 abstract class Command(val argSyntax: String = "") {
     open fun execute(args:List<String>, board:Board?): Board = throw IllegalStateException("GameOver")
     open val isToFinish = false
