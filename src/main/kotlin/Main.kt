@@ -17,12 +17,13 @@ fun main() {
                 if (cmd.isToFinish) break
                 board = cmd.execute(args, board)
                 board = board.clean()
+                println(board.countLiberties(args[0].toPosition()))
             }
             catch (e: Throwable) {
                 println(e.message)
             }
             board?.show()
-            println(board?.countLiberties(Position(3, 'F')))
+            println()
         }
     }
 }

@@ -1,11 +1,5 @@
 package isel.tds.go.model
-data class Position(val row:Int, val col:Char) {
-
-//    val liberties: Int get() = countLiberties()
-//
-//    private fun countLiberties(board: Board): Int {
-//
-//    }
+class Position(val row:Int, val col:Char) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -20,6 +14,18 @@ data class Position(val row:Int, val col:Char) {
     }
 }
 
+fun Position.getAdjacentPositions(): List<Position> {
+    return listOf(
+        Position(this.row, this.col - 1),
+        Position(this.row, this.col + 1),
+        Position(this.row - 1, this.col),
+        Position(this.row + 1, this.col)
+    )
+}
+
+fun Position.isValidPosition(): Boolean {
+    return (this.row in 1..BOARD_SIZE && this.col in 'A'..<'A' + BOARD_SIZE)
+}
 
 fun String.toPosition(): Position {
     val letterIndex = this.indexOfFirst { !it.isDigit() } // Find the idx of the first char that is not a number
