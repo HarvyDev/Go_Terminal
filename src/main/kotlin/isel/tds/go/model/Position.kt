@@ -1,6 +1,12 @@
 package isel.tds.go.model
 data class Position(val row:Int, val col:Char) {
 
+//    val liberties: Int get() = countLiberties()
+//
+//    private fun countLiberties(board: Board): Int {
+//
+//    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Position) return false

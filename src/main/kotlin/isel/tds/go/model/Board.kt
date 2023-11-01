@@ -11,7 +11,7 @@ enum class Piece {
 class Board(
 //    val boardCells: Map<Position, Piece?> = (1..BOARD_SIZE * BOARD_SIZE).associate { Position(it, 'A' + (it - 1)) to null },
     val boardCells: Map<Position, Piece?> = emptyMap(),
-    val turn: Piece = Piece.WHITE
+    val turn: Piece = Piece.BLACK
 )
 
 fun Board.canPlay(pos: Position): Boolean {
@@ -54,4 +54,35 @@ fun Board.show() {
         }
         println()
     }
+}
+
+fun Board.countLiberties(pos:Position): Int {
+    if (this.boardCells[pos] == null) return 0
+
+    val piece = this.boardCells[pos] // WHITE or BLACK piece
+    var count = 0
+
+    // Check right side
+    if (this.boardCells[Position(pos.row, pos.col - 1)] != piece?.other) count++
+    // Check left side
+    if (this.boardCells[Position(pos.row, pos.col + 1)] != piece?.other) count++
+    // Check above
+    if (this.boardCells[Position(pos.row - 1, pos.col)] != piece?.other) count++
+    // Check under
+    if (this.boardCells[Position(pos.row + 1, pos.col)] != piece?.other) count++
+
+    return count
+}
+
+fun Board.clean(): Board {
+    val newBoardCells = boardCells.toMutableMap()
+    for (r in 0..<BOARD_SIZE) {
+        for (c in 65..65 + BOARD_SIZE) {
+            if (this.countLiberties(Position(r, c.toChar())) == 0) {
+
+                newBoardCells[Position(r, c.toChar())] = null
+            }
+        }
+    }
+    return Board(newBoardCells, turn)
 }
