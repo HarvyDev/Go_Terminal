@@ -85,8 +85,8 @@ private fun Board.exploreLiberties(initialPos: Position, currentPosition: Positi
 
 fun Board.clean(): Board {
     val newBoardCells = boardCells.toMutableMap()
-    for (r in 0..<BOARD_SIZE) {
-        for (c in 65..65 + BOARD_SIZE) {
+    for (r in 1..BOARD_SIZE) {
+        for (c in 65..<65 + BOARD_SIZE) {
             if (this.countLiberties(Position(r, c.toChar())) == 0) {
                 newBoardCells[Position(r, c.toChar())] = null
             }
