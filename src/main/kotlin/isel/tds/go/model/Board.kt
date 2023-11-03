@@ -57,8 +57,6 @@ fun Board.show() {
     }
 }
 
-
-
 fun Board.countLiberties(pos:Position): Int {
     val visited = mutableSetOf<Position>()
 

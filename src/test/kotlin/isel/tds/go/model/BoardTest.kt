@@ -1,11 +1,9 @@
 package isel.tds.go.model
 
-import org.junit.jupiter.api.assertThrows
-import java.lang.IllegalArgumentException
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class BoardTest {
     @Test
@@ -45,13 +43,13 @@ class BoardTest {
     fun `test play edge cases`() {
         var sut = Board()
         sut = sut.play("9a".toPosition())
-        assertFalse(sut.canPlay("9a".toPosition()))
         sut = sut.play("1a".toPosition())
-        assertFalse(sut.canPlay("1a".toPosition()))
         sut = sut.play("9i".toPosition())
-        assertFalse(sut.canPlay("9i".toPosition()))
         sut = sut.play("1i".toPosition())
-        assertFalse(sut.canPlay("1i".toPosition()))
+        assertEquals(sut.boardCells["9a".toPosition()], Piece.BLACK)
+        assertEquals(sut.boardCells["1a".toPosition()], Piece.WHITE)
+        assertEquals(sut.boardCells["9i".toPosition()], Piece.BLACK)
+        assertEquals(sut.boardCells["1i".toPosition()], Piece.WHITE)
     }
 
 
@@ -62,5 +60,44 @@ class BoardTest {
         sut = sut.play(Position(2, 'A'))
         assertFalse(sut.canPlay(Position(1,'A')))
         assertFalse(sut.canPlay(Position(2, 'A')))
+    }
+
+    @Test
+    fun `kill stone in bottom right corner`() {
+        var sut = Board()
+        sut = sut.play("2i".toPosition())
+        sut = sut.play("1i".toPosition())
+        sut = sut.play("1h".toPosition())
+        sut = sut.clean()
+        assertEquals(null, sut.boardCells["1i".toPosition()])
+    }
+
+    @Test
+    fun `kill stone in bottom left corner`() {
+        var sut = Board()
+        sut = sut.play("2a".toPosition())
+        sut = sut.play("1a".toPosition())
+        sut = sut.play("1b".toPosition())
+        sut = sut.clean()
+        assertEquals(null, sut.boardCells["1a".toPosition()])
+    }
+
+    @Test
+    fun `kill stone in top right corner`() {
+        var sut = Board()
+        sut = sut.play("9h".toPosition())
+        sut = sut.play("9i".toPosition())
+        sut = sut.play("8i".toPosition())
+        sut = sut.clean()
+        assertEquals(null, sut.boardCells["9i".toPosition()])
+    }
+    @Test
+    fun `kill stone in top left corner`() {
+        var sut = Board()
+        sut = sut.play("9b".toPosition())
+        sut = sut.play("9a".toPosition())
+        sut = sut.play("8a".toPosition())
+        sut = sut.clean()
+        assertEquals(null, sut.boardCells["9a".toPosition()])
     }
 }
