@@ -15,9 +15,9 @@ fun main() {
         else {
             try {
                 if (cmd.isToFinish) break
+                println(args)
                 board = cmd.execute(args, board)
                 board = board.clean()
-                println(board.countLiberties(args[0].toPosition()))
             }
             catch (e: Throwable) {
                 println(e.message)

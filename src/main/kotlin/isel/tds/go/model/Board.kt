@@ -22,9 +22,12 @@ fun Board.play(pos:Position):Board {
 
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
-    require(this.countLiberties(pos) > 0) { "Suicide" }
+//    require(this.countLiberties(pos) > 0) { "Suicide" }
+    println("ROW = ${pos.row}")
+    println("COL = ${pos.col}")
 
     if (!canPlay(pos)) {
+        println("cant play here")
         return this
     }
 
@@ -36,13 +39,13 @@ fun Board.play(pos:Position):Board {
 
 fun Board.show() {
     var firstLine = " "
-    for (i in 0.. BOARD_SIZE) {
+    for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
     }
     println(firstLine)
     for (i in BOARD_SIZE downTo 1) {
         print(i)
-        for (j in 65..65 + BOARD_SIZE) {
+        for (j in 65..<65 + BOARD_SIZE) {
             if (boardCells[Position(i, j.toChar())] == null) {
                 print(" . ")
             }
@@ -57,30 +60,32 @@ fun Board.show() {
     }
 }
 
+
+
 fun Board.countLiberties(pos:Position): Int {
     val visited = mutableSetOf<Position>()
 
-    fun exploreLiberties(currentPosition: Position): Int {
-        visited.add(currentPosition)
-
-        val adjacentPositions = currentPosition.getAdjacentPositions()
-        var liberties = 0
-
-        for (adjacent in adjacentPositions) {
-            if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
-                if (boardCells[adjacent] == null)
-                    liberties++
-                else if (boardCells[adjacent] == boardCells[pos])
-                    liberties += exploreLiberties(adjacent)
-            }
-        }
-        return liberties
-    }
-
     if (pos.isValidPosition() && boardCells[pos] != null)
-        return exploreLiberties(pos)
+        return exploreLiberties(pos, pos, visited)
 
     return 0
+}
+
+private fun Board.exploreLiberties(initialPos: Position, currentPosition: Position, visited: MutableSet<Position>): Int {
+    visited.add(currentPosition)
+
+    val adjacentPositions = currentPosition.getAdjacentPositions()
+    var liberties = 0
+
+    for (adjacent in adjacentPositions) {
+        if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
+            if (boardCells[adjacent] == null)
+                liberties++
+            else if (boardCells[adjacent] == boardCells[initialPos])
+                liberties += exploreLiberties(initialPos, adjacent, visited)
+        }
+    }
+    return liberties
 }
 
 fun Board.clean(): Board {
