@@ -22,12 +22,9 @@ fun Board.play(pos:Position):Board {
 
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
-//    require(this.countLiberties(pos) > 0) { "Suicide" }
-    println("ROW = ${pos.row}")
-    println("COL = ${pos.col}")
+
 
     if (!canPlay(pos)) {
-        println("cant play here")
         return this
     }
 
