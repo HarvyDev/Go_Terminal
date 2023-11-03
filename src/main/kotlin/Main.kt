@@ -23,6 +23,7 @@ fun main() {
                 println(e.message)
             }
             board?.show()
+            println("It's" + " ${board?.turn?.symbol}"+"'s"+" turn")
             println()
         }
     }

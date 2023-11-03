@@ -7,6 +7,11 @@ const val BOARD_CELLS = BOARD_SIZE * BOARD_SIZE
 enum class Piece {
     WHITE, BLACK;
     val other: Piece get() = if (this == WHITE) BLACK else WHITE
+    val symbol: String
+        get() = when (this) {
+            WHITE -> "O"
+            BLACK -> "#"
+        }
 }
 class Board(
 //    val boardCells: Map<Position, Piece?> = (1..BOARD_SIZE * BOARD_SIZE).associate { Position(it, 'A' + (it - 1)) to null },
@@ -35,6 +40,7 @@ fun Board.play(pos:Position):Board {
 }
 
 fun Board.show() {
+    val symbol = if(this.turn == Piece.WHITE) " # " else " O "
     var firstLine = " "
     for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
@@ -46,11 +52,8 @@ fun Board.show() {
             if (boardCells[Position(i, j.toChar())] == null) {
                 print(" . ")
             }
-            else if (boardCells[Position(i, j.toChar())] == Piece.WHITE) {
-                print(" O ")
-            }
             else {
-                print(" # ")
+                print(symbol)
             }
         }
         println()
@@ -83,6 +86,19 @@ private fun Board.exploreLiberties(initialPos: Position, currentPosition: Positi
     return liberties
 }
 
+fun Board.isSuicide(pos: Position): Boolean{
+    if(pos.isValidPosition() && boardCells[pos] == null) {
+        // Criamos uma nova board
+        val newBoard = boardCells.toMutableMap()
+        // Definimos a posição que estamos tentar jogar na nova board como o turn atual
+        newBoard[pos] = this.turn
+        // A partir desta nova board, exploramos as liberdades da peça inserida
+        val liberties = exploreLiberties(pos,pos, mutableSetOf())
+        // Caso esta não tenha liberdades, significará que posicionar uma peça nessa posição resulta em suicidio.
+        return liberties == 0
+    }
+    return false
+}
 fun Board.clean(): Board {
     val newBoardCells = boardCells.toMutableMap()
     for (r in 1..BOARD_SIZE) {

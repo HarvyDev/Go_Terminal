@@ -1,9 +1,6 @@
 package isel.tds.go.model
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
+import kotlin.test.*
 
 class BoardTest {
     @Test
@@ -99,5 +96,44 @@ class BoardTest {
         sut = sut.play("8a".toPosition())
         sut = sut.clean()
         assertEquals(null, sut.boardCells["9a".toPosition()])
+    }
+
+    @Test
+    fun `simple suicide 1 white piece surrounded by 4 black`(){
+        var sut = Board()
+        sut = sut.play("9d".toPosition())
+        sut = sut.play("1e".toPosition())
+        sut = sut.play("8c".toPosition())
+        sut = sut.play("1i".toPosition())
+        sut = sut.play("7d".toPosition())
+        sut = sut.play("1a".toPosition())
+        sut = sut.play("8e".toPosition())
+        assertTrue(sut.isSuicide("8d".toPosition()))
+    }
+
+    @Test
+    fun `group suicide`(){
+        var sut = Board()
+        sut = sut.play("9d".toPosition())
+        sut = sut.play("1e".toPosition())
+        sut = sut.play("8c".toPosition())
+        sut = sut.play("1a".toPosition())
+        sut = sut.play("7c".toPosition())
+        sut = sut.play("7d".toPosition())
+        sut = sut.play("6d".toPosition())
+        sut = sut.play("1f".toPosition())
+        sut = sut.play("7e".toPosition())
+        sut = sut.play("1h".toPosition())
+        sut = sut.play("8e".toPosition())
+        assertTrue(sut.isSuicide("8d".toPosition()))
+    }
+
+    @Test
+    fun `corner suicide`(){
+        var sut = Board()
+        sut = sut.play("9b".toPosition())
+        sut = sut.play("1f".toPosition())
+        sut = sut.play("8a".toPosition())
+        assertTrue(sut.isSuicide("9a".toPosition()))
     }
 }
