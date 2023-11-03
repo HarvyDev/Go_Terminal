@@ -96,6 +96,7 @@ fun Board.isSuicide(pos: Position): Boolean{
         val liberties = exploreLiberties(pos,pos, mutableSetOf())
         // Caso esta não tenha liberdades, significará que posicionar uma peça nessa posição resulta em suicidio.
         return liberties == 0
+
     }
     return false
 }
