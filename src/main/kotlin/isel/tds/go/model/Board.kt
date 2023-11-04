@@ -1,7 +1,5 @@
 package isel.tds.go.model
 
-import java.lang.IllegalArgumentException
-
 const val BOARD_SIZE = 9
 const val BOARD_CELLS = BOARD_SIZE * BOARD_SIZE
 enum class Piece {
@@ -14,7 +12,6 @@ enum class Piece {
         }
 }
 class Board(
-//    val boardCells: Map<Position, Piece?> = (1..BOARD_SIZE * BOARD_SIZE).associate { Position(it, 'A' + (it - 1)) to null },
     val boardCells: Map<Position, Piece?> = emptyMap(),
     val turn: Piece = Piece.BLACK
 )
@@ -40,7 +37,6 @@ fun Board.play(pos:Position):Board {
 }
 
 fun Board.show() {
-    val symbol = if(this.turn == Piece.WHITE) " # " else " O "
     var firstLine = " "
     for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
@@ -53,7 +49,7 @@ fun Board.show() {
                 print(" . ")
             }
             else {
-                print(symbol)
+                print(" ${boardCells[Position(i, j.toChar())]?.symbol} ")
             }
         }
         println()
@@ -100,6 +96,7 @@ fun Board.isSuicide(pos: Position): Boolean{
     }
     return false
 }
+
 fun Board.clean(): Board {
     val newBoardCells = boardCells.toMutableMap()
     for (r in 1..BOARD_SIZE) {

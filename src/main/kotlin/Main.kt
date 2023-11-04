@@ -1,7 +1,6 @@
 import isel.tds.go.model.*
 import isel.tds.go.view.getCommands
 import isel.tds.go.view.readCommandLine
-import java.lang.IllegalArgumentException
 
 fun main() {
     var board: Board? = null
@@ -15,7 +14,6 @@ fun main() {
         else {
             try {
                 if (cmd.isToFinish) break
-                println(args)
                 board = cmd.execute(args, board)
                 board = board.clean()
             }
