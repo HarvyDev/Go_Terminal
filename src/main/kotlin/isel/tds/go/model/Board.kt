@@ -40,7 +40,6 @@ fun Board.play(pos:Position):Board {
 }
 
 fun Board.show() {
-    val symbol = if(this.turn == Piece.WHITE) " # " else " O "
     var firstLine = " "
     for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
@@ -53,7 +52,7 @@ fun Board.show() {
                 print(" . ")
             }
             else {
-                print(symbol)
+                print(" ${boardCells[Position(i, j.toChar())]?.symbol} ")
             }
         }
         println()
@@ -100,6 +99,7 @@ fun Board.isSuicide(pos: Position): Boolean{
     }
     return false
 }
+
 fun Board.clean(): Board {
     val newBoardCells = boardCells.toMutableMap()
     for (r in 1..BOARD_SIZE) {
