@@ -1,8 +1,6 @@
 package isel.tds.go.view
 
-import isel.tds.go.model.Board
-import isel.tds.go.model.play
-import isel.tds.go.model.toPosition
+import isel.tds.go.model.*
 
 abstract class Command(val argSyntax: String = "") {
     open fun execute(args:List<String>, board:Board?): Board = throw IllegalStateException("GameOver")
@@ -19,6 +17,19 @@ object Play : Command("pos") {
     }
 }
 
+
+object Pass : Command() {
+    override fun execute(args: List<String>, board: Board?): Board {
+        checkNotNull(board) { "Game hasn't started" }
+        return board.pass()
+    }
+}
+
+object Exit: Command() {
+    override val isToFinish = true
+
+}
+
 //object Save : Command() {
 //    TODO()
 //}
@@ -33,13 +44,9 @@ fun getCommands(): Map<String, Command> {
         "NEW" to object : Command() {
             override fun execute(args: List<String>, board: Board?) = Board()
         },
-        "PASS" to object : Command() {
-            override fun execute(args: List<String>, board: Board?): Board = board ?: throw IllegalStateException("Game hasn't started")
-        },
+        "PASS" to Pass,
 //        "SAVE" to Save,
 //        "LOAD" to Load,
-        "EXIT" to object : Command() {
-            override val isToFinish = true
-        }
+        "EXIT" to Exit
     )
 }

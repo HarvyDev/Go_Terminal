@@ -11,9 +11,15 @@ enum class Piece {
             BLACK -> "#"
         }
 }
+
 class Board(
     val boardCells: Map<Position, Piece?> = emptyMap(),
-    val turn: Piece = Piece.BLACK
+    val turn: Piece = Piece.BLACK,
+    val isFinished: Boolean = false,
+    val whiteCaptures: Int = 0,
+    val blackCaptures: Int = 0,
+    val consecutivePasses: Int = 0
+
 )
 
 fun Board.canPlay(pos: Position): Boolean {
@@ -83,7 +89,7 @@ private fun Board.exploreLiberties(initialPos: Position, currentPosition: Positi
 }
 
 fun Board.isSuicide(pos: Position): Boolean{
-    if(pos.isValidPosition() && boardCells[pos] == null) {
+    if(pos.isValidPosition() && canPlay(pos)) {
         // Criamos uma nova board
         val newBoard = boardCells.toMutableMap()
         // Definimos a posição que estamos tentar jogar na nova board como o turn atual
@@ -99,12 +105,62 @@ fun Board.isSuicide(pos: Position): Boolean{
 
 fun Board.clean(): Board {
     val newBoardCells = boardCells.toMutableMap()
+    var newBlackCaptures = blackCaptures
+    var newWhiteCaptures = whiteCaptures
     for (r in 1..BOARD_SIZE) {
         for (c in 65..<65 + BOARD_SIZE) {
-            if (this.countLiberties(Position(r, c.toChar())) == 0) {
+            if (this.countLiberties(Position(r, c.toChar())) == 0 && this.boardCells[Position(r, c.toChar())] != null) {
+                if(boardCells[Position(r, c.toChar())] == Piece.WHITE){
+                    newBlackCaptures = blackCaptures + 1
+                }
+                else{
+                    newWhiteCaptures = whiteCaptures + 1
+                }
                 newBoardCells[Position(r, c.toChar())] = null
             }
         }
     }
-    return Board(newBoardCells, turn)
+    return Board(newBoardCells, turn, isFinished ,whiteCaptures = newWhiteCaptures, blackCaptures = newBlackCaptures,consecutivePasses )
 }
+
+
+//class Board(
+//    val boardCells: Map<Position, Piece?> = emptyMap(),
+//    val turn: Piece = Piece.BLACK,
+//    val isFinished: Boolean = false,
+//    val whiteCaptures: Int = 0,
+//    val blackCaptures: Int = 0,
+//    val consecutivePasses: Int = 0
+//
+//)
+fun Board.pass(): Board {
+    // Check if the game is already finished
+    if (isFinished) {
+        return this
+    }
+
+
+    if(this.turn == Piece.BLACK){
+        if(consecutivePasses == 1){
+            return Board(boardCells, turn.other, true)
+        }
+        else {
+            return Board(boardCells,turn.other,consecutivePasses = this.consecutivePasses + 1)
+        }
+    }
+    else if(this.turn == Piece.WHITE){
+        if(consecutivePasses == 1){
+            return  Board(boardCells, turn.other, true)
+        }
+        else {
+            return Board(boardCells,turn.other,consecutivePasses = this.consecutivePasses + 1)
+        }
+    }
+    return this
+}
+
+fun Board?.end(): Board? {
+    if(this == null) return null
+    else if(isFinished) return null else return this
+}
+

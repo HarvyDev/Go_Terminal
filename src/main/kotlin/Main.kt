@@ -6,6 +6,7 @@ fun main() {
     var board: Board? = null
     val commands = getCommands()
     while(true){
+        board = board?.end()
         val (name, args) = readCommandLine()
         val cmd = commands[name]
         if (cmd == null) {
@@ -21,7 +22,10 @@ fun main() {
                 println(e.message)
             }
             board?.show()
-            println("It's" + " ${board?.turn?.symbol}"+"'s"+" turn")
+            if(board != null) {
+                println("It's" + " ${board.turn.symbol}" + "'s" + " turn")
+                println("Captures: Black ${board.blackCaptures}, White: ${board.whiteCaptures}")
+            }
             println()
         }
     }
