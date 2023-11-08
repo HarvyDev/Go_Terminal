@@ -3,13 +3,14 @@ package isel.tds.go.view
 import isel.tds.go.model.Board
 import isel.tds.go.model.play
 import isel.tds.go.model.toPosition
+import isel.tds.go.storage.BoardSerializer
 
-abstract class Command(val argSyntax: String = "") {
+abstract class Command {
     open fun execute(args:List<String>, board:Board?): Board = throw IllegalStateException("GameOver")
     open val isToFinish = false
 }
 
-object Play : Command("pos") {
+object Play : Command() {
     override fun execute(args: List<String>, board: Board?): Board {
         checkNotNull(board) { "Game hasn't started" }
 
@@ -19,12 +20,25 @@ object Play : Command("pos") {
     }
 }
 
-//object Save : Command() {
-//    TODO()
-//}
-//object Load : Command() {
-//    TODO()
-//}
+object Save : Command() {
+    override fun execute(args: List<String>, board: Board?): Board {
+        checkNotNull(board) { "Game hasn't started" }
+
+        val serializedBoard = BoardSerializer.serialize(board)
+
+        // TODO("Store the board state in the database")
+
+        return board
+    }
+}
+
+object Load : Command() {
+    override fun execute(args: List<String>, board: Board?): Board {
+        val serializedBoard = requireNotNull(args.firstOrNull()) { "Missing board" }
+
+        return BoardSerializer.deserialize(serializedBoard)
+    }
+}
 
 
 fun getCommands(): Map<String, Command> {
@@ -36,8 +50,8 @@ fun getCommands(): Map<String, Command> {
         "PASS" to object : Command() {
             override fun execute(args: List<String>, board: Board?): Board = board ?: throw IllegalStateException("Game hasn't started")
         },
-//        "SAVE" to Save,
-//        "LOAD" to Load,
+        "SAVE" to Save,
+        "LOAD" to Load,
         "EXIT" to object : Command() {
             override val isToFinish = true
         }

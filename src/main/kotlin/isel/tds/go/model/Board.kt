@@ -25,7 +25,6 @@ fun Board.play(pos:Position):Board {
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
 
-
     if (!canPlay(pos)) {
         return this
     }
@@ -41,25 +40,24 @@ fun Board.show() {
     for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
     }
-    println(firstLine)
-    for (i in BOARD_SIZE downTo 1) {
-        print(i)
-        for (j in 65..<65 + BOARD_SIZE) {
-            if (boardCells[Position(i, j.toChar())] == null) {
-                print(" . ")
-            }
-            else {
-                print(" ${boardCells[Position(i, j.toChar())]?.symbol} ")
-            }
+    print(firstLine)
+    Position.values.forEach { pos ->
+        if (pos.col == 'A') {
+            println()
+            print(pos.row)
         }
-        println()
+        if (boardCells[pos] == null) {
+            print(" . ")
+        } else {
+            print(" ${boardCells[pos]?.symbol} ")
+        }
     }
+    println()
 }
-
 fun Board.countLiberties(pos:Position): Int {
     val visited = mutableSetOf<Position>()
 
-    if (pos.isValidPosition() && boardCells[pos] != null)
+    if (boardCells[pos] != null)
         return exploreLiberties(pos, pos, visited)
 
     return 0
@@ -83,7 +81,7 @@ private fun Board.exploreLiberties(initialPos: Position, currentPosition: Positi
 }
 
 fun Board.isSuicide(pos: Position): Boolean{
-    if(pos.isValidPosition() && boardCells[pos] == null) {
+    if(boardCells[pos] == null) {
         // Criamos uma nova board
         val newBoard = boardCells.toMutableMap()
         // Definimos a posição que estamos tentar jogar na nova board como o turn atual
