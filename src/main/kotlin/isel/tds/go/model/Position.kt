@@ -12,6 +12,16 @@ class Position(val row:Int, val col:Char) {
         result = 31 * result + col.hashCode()
         return result
     }
+
+    companion object {
+        val values = List(BOARD_CELLS) { idx ->
+            Position(idx / BOARD_SIZE + 1, 'A' + idx % BOARD_SIZE)
+        }
+        operator fun invoke(row: Int, col: Char): Position {
+            require(row in 1..BOARD_SIZE && col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
+            return values[row * BOARD_SIZE + (col - 'A')]
+        }
+    }
 }
 
 fun Position.getAdjacentPositions(): List<Position> {

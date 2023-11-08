@@ -3,7 +3,7 @@ import isel.tds.go.view.getCommands
 import isel.tds.go.view.readCommandLine
 
 fun main() {
-    var board: Board? = null
+    var board: Board? = Board()
     val commands = getCommands()
     while(true){
         board = board?.end()
@@ -30,3 +30,4 @@ fun main() {
         }
     }
 }
+
