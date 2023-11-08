@@ -1,6 +1,7 @@
 package isel.tds.go.view
 
 import isel.tds.go.model.Board
+import isel.tds.go.model.pass
 import isel.tds.go.model.play
 import isel.tds.go.model.toPosition
 import isel.tds.go.storage.BoardSerializer
