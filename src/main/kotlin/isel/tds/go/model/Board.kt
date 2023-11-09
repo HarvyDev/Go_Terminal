@@ -151,3 +151,7 @@ fun Board?.end(): Board? {
     if(this == null) return null
     else if(isFinished) return null else return this
 }
+
+fun Board.resign(): Board{
+    return Board(boardCells, turn.other, true)
+}
