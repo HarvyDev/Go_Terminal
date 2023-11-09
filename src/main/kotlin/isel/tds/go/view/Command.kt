@@ -1,9 +1,6 @@
 package isel.tds.go.view
 
-import isel.tds.go.model.Board
-import isel.tds.go.model.pass
-import isel.tds.go.model.play
-import isel.tds.go.model.toPosition
+import isel.tds.go.model.*
 import isel.tds.go.storage.BoardSerializer
 
 
@@ -49,6 +46,13 @@ object Pass : Command() {
     }
 }
 
+object Resign: Command() {
+    override fun execute(args: List<String>, board: Board?): Board {
+        checkNotNull(board) { "Game hasn't started" }
+        return board.resign()
+    }
+}
+
 object Exit: Command() {
     override val isToFinish = true
 
@@ -63,6 +67,7 @@ fun getCommands(): Map<String, Command> {
         "PASS" to Pass,
         "SAVE" to Save,
         "LOAD" to Load,
-        "EXIT" to Exit
+        "EXIT" to Exit,
+        "RESIGN" to Resign
     )
 }
