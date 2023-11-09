@@ -60,9 +60,7 @@ fun getCommands(): Map<String, Command> {
         "NEW" to object : Command() {
             override fun execute(args: List<String>, board: Board?) = Board()
         },
-        "PASS" to object : Command() {
-            override fun execute(args: List<String>, board: Board?): Board = board ?: throw IllegalStateException("Game hasn't started")
-        },
+        "PASS" to Pass,
         "SAVE" to Save,
         "LOAD" to Load,
         "EXIT" to Exit
