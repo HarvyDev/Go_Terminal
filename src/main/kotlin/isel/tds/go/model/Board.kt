@@ -121,16 +121,6 @@ fun Board.clean(): Board {
     return Board(newBoardCells, turn, isFinished ,whiteCaptures = newWhiteCaptures, blackCaptures = newBlackCaptures,consecutivePasses )
 }
 
-
-//class Board(
-//    val boardCells: Map<Position, Piece?> = emptyMap(),
-//    val turn: Piece = Piece.BLACK,
-//    val isFinished: Boolean = false,
-//    val whiteCaptures: Int = 0,
-//    val blackCaptures: Int = 0,
-//    val consecutivePasses: Int = 0
-//
-//)
 fun Board.pass(): Board {
     // Check if the game is already finished
     if (isFinished) {
@@ -161,4 +151,3 @@ fun Board?.end(): Board? {
     if(this == null) return null
     else if(isFinished) return null else return this
 }
-
