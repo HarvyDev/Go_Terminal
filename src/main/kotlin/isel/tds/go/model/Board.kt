@@ -19,7 +19,6 @@ class Board(
     val whiteCaptures: Int = 0,
     val blackCaptures: Int = 0,
     val consecutivePasses: Int = 0
-
 )
 
 fun Board.canPlay(pos: Position): Boolean {
