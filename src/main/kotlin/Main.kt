@@ -27,12 +27,14 @@ fun main() {
                 catch (e: Throwable) {
                     println(e.message)
                 }
-                board?.show()
-                if(board != null) {
-                    println("It's" + " ${board.turn.symbol}" + "'s" + " turn")
-                    println("Captures: Black ${board.blackCaptures}, White: ${board.whiteCaptures}")
+                finally {
+                    board?.show()
+                    if(board != null) {
+                        println("It's" + " ${board.turn.symbol}" + "'s" + " turn")
+                        println("Captures: Black ${board.blackCaptures}, White: ${board.whiteCaptures}")
+                    }
+                    println()
                 }
-                println()
             }
         }
     }
