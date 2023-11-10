@@ -35,7 +35,6 @@ object Resign: Command() {
 
 object Exit: Command() {
     override val isToFinish = true
-
 }
 
 fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
@@ -60,7 +59,6 @@ fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
         },
         "LOAD" to object : Command() {
             override fun execute(args: List<String>, board: Board?): Board {
-
                 val name = requireNotNull(args.firstOrNull()) { "Missing file name" }
                 return checkNotNull(storage.read(name)) { "Game $name not found" }
             }
