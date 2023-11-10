@@ -20,8 +20,8 @@ fun main() {
             }
             else {
                 try {
-                    if (cmd.isToFinish) break
                     board = cmd.execute(args, board)
+                    if (board.isFinished) break
                     board = board.clean()
                 }
                 catch (e: Throwable) {
@@ -32,8 +32,8 @@ fun main() {
                     if(board != null) {
                         println("It's" + " ${board.turn.symbol}" + "'s" + " turn")
                         println("Captures: Black ${board.blackCaptures}, White: ${board.whiteCaptures}")
+                        println()
                     }
-                    println()
                 }
             }
         }

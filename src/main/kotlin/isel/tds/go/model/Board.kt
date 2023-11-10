@@ -130,19 +130,46 @@ fun Board.pass(): Board {
         return this
     }
 
-
     if(this.turn == Piece.BLACK){
         return if (consecutivePasses == 1){
-            Board(boardCells, turn.other, true)
+            Board(
+                boardCells = boardCells,
+                turn = turn.other,
+                isFinished = true,
+                whiteCaptures = whiteCaptures,
+                blackCaptures = blackCaptures,
+                consecutivePasses = consecutivePasses + 1
+            )
         } else {
-            Board(boardCells,turn.other,consecutivePasses = this.consecutivePasses + 1)
+            Board(
+                boardCells = boardCells,
+                turn = turn.other,
+                isFinished = false,
+                whiteCaptures = whiteCaptures,
+                blackCaptures = blackCaptures,
+                consecutivePasses = consecutivePasses + 1
+            )
         }
     }
     else if(this.turn == Piece.WHITE){
         return if (consecutivePasses == 1) {
-            Board(boardCells, turn.other, true)
+            Board(
+                boardCells = boardCells,
+                turn = turn.other,
+                isFinished = true,
+                whiteCaptures = whiteCaptures,
+                blackCaptures = blackCaptures,
+                consecutivePasses = consecutivePasses + 1
+            )
         } else {
-            Board(boardCells,turn.other,consecutivePasses = this.consecutivePasses + 1)
+            Board(
+                boardCells = boardCells,
+                turn = turn.other,
+                isFinished = false,
+                whiteCaptures = whiteCaptures,
+                blackCaptures = blackCaptures,
+                consecutivePasses = consecutivePasses + 1
+            )
         }
     }
     return this
@@ -154,4 +181,11 @@ fun Board?.end(): Board? {
 }
 
 fun Board.resign(): Board =
-    Board(boardCells, turn.other, true)
+    Board(
+        boardCells = boardCells,
+        turn = turn.other,
+        isFinished = true,
+        whiteCaptures = whiteCaptures,
+        blackCaptures = blackCaptures,
+        consecutivePasses = consecutivePasses
+    )

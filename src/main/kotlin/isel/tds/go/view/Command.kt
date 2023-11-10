@@ -33,9 +33,9 @@ object Resign: Command() {
     }
 }
 
-object Exit: Command() {
-    override val isToFinish = true
-}
+//object Exit: Command() {
+//    override val isToFinish = true
+//}
 
 fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
     return mapOf(
@@ -63,7 +63,12 @@ fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
                 return checkNotNull(storage.read(name)) { "Game $name not found" }
             }
         },
-        "EXIT" to Exit,
+        "EXIT" to object : Command() {
+            override fun execute(args: List<String>, board: Board?): Board {
+                return Board(isFinished = true)
+            }
+            override val isToFinish = true
+         },
         "RESIGN" to Resign
     )
 }
