@@ -40,7 +40,7 @@ fun Board.play(pos:Position):Board {
         return Board(
             boardCells = newBoardCells,
             turn = turn.other,
-            isFinished = true,
+            isFinished = false,
             whiteCaptures = whiteCaptures,
             blackCaptures = blackCaptures,
             consecutivePasses = consecutivePasses
@@ -119,7 +119,14 @@ fun Board.isSuicide(pos: Position): Boolean{
         // Definimos a posição que estamos tentar jogar na nova board como o turn atual
         newBoard[pos] = this.turn
         // A partir desta nova board, exploramos as liberdades da peça inserida
-        val liberties = exploreLiberties(pos,pos, mutableSetOf())
+        val liberties = Board(
+            newBoard,
+            turn,
+            isFinished,
+            whiteCaptures,
+            blackCaptures,
+            consecutivePasses
+        ).exploreLiberties(pos,pos, mutableSetOf())
         // Caso esta não tenha liberdades, significará que posicionar uma peça nessa posição resulta em suicidio.
         return liberties == 0
     }

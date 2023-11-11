@@ -29,7 +29,7 @@ fun main() {
                 }
                 board?.show()
                 println("It's" + " ${board?.turn?.symbol}" + "'s" + " turn")
-                println("Captures: Black ${board?.blackCaptures}, White: ${board?.whiteCaptures}")
+                println("Captures: Black: ${board?.blackCaptures}, White: ${board?.whiteCaptures}")
                 println()
             }
         }
