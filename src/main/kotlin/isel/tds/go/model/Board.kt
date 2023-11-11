@@ -21,15 +21,16 @@ class Board(
     val consecutivePasses: Int = 0
 )
 
-fun Position.canPlay(): Boolean =
-    this.row in 1..BOARD_SIZE && this.col in 'A'..<'A' + BOARD_SIZE
+fun Board.canPlay(pos:Position): Boolean =
+    pos.row in 1..BOARD_SIZE && pos.col in 'A'..<'A' + BOARD_SIZE &&
+    this.boardCells[pos] == null
 
 
 fun Board.play(pos:Position):Board {
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
 
-    if (!pos.canPlay()) {
+    if (!this.canPlay(pos)) {
         return this
     }
 
@@ -92,7 +93,7 @@ private fun Board.exploreLiberties(initialPos: Position, currentPosition: Positi
 }
 
 fun Board.isSuicide(pos: Position): Boolean{
-    if(pos.isValidPosition() && pos.canPlay()) {
+    if(pos.isValidPosition() && this.canPlay(pos)) {
         // Criamos uma nova board
         val newBoard = boardCells.toMutableMap()
         // Definimos a posição que estamos tentar jogar na nova board como o turn atual
