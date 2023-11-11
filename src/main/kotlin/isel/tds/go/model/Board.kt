@@ -25,13 +25,26 @@ fun Board.canPlay(pos:Position): Boolean =
     pos.row in 1..BOARD_SIZE && pos.col in 'A'..<'A' + BOARD_SIZE &&
     this.boardCells[pos] == null
 
-
 fun Board.play(pos:Position):Board {
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
 
-    if (!this.canPlay(pos)) {
+    if (!this.canPlay(pos) || (this.isSuicide(pos) && !this.hasLibertiesAfterPlay(pos))) {
+        println("Invalid play, suicide!")
         return this
+    }
+
+    else if (this.isSuicide(pos) && this.hasLibertiesAfterPlay(pos)) {
+        val newBoardCells = boardCells.toMutableMap()
+        newBoardCells[pos] = this.turn
+        return Board(
+            boardCells = newBoardCells,
+            turn = turn.other,
+            isFinished = true,
+            whiteCaptures = whiteCaptures,
+            blackCaptures = blackCaptures,
+            consecutivePasses = consecutivePasses
+        ).clean(pos)
     }
 
     val newBoardCells = boardCells.toMutableMap()
@@ -44,8 +57,15 @@ fun Board.play(pos:Position):Board {
         whiteCaptures = whiteCaptures,
         blackCaptures = blackCaptures,
         consecutivePasses = consecutivePasses
-    )
+    ).clean(null)
 }
+
+fun Board.hasLibertiesAfterPlay(pos:Position): Boolean {
+    val newBoardCells = boardCells.toMutableMap()
+    newBoardCells[pos] = this.turn
+    return Board(newBoardCells, turn, isFinished, whiteCaptures, blackCaptures, consecutivePasses).clean(null).play(pos).exploreLiberties(pos,pos, mutableSetOf()) != 0
+}
+
 
 fun Board.show() {
     var firstLine = " "
@@ -66,11 +86,11 @@ fun Board.show() {
     }
     println()
 }
-fun Board.countLiberties(pos:Position): Int {
+fun countLiberties(board:Board, pos:Position): Int {
     val visited = mutableSetOf<Position>()
 
-    if (boardCells[pos] != null)
-        return exploreLiberties(pos, pos, visited)
+    if (board.boardCells[pos] != null)
+        return board.exploreLiberties(pos, pos, visited)
 
     return 0
 }
@@ -106,13 +126,13 @@ fun Board.isSuicide(pos: Position): Boolean{
     return false
 }
 
-fun Board.clean(): Board {
+fun Board.clean(except: Position?): Board {
     val newBoardCells = boardCells.toMutableMap()
     var newBlackCaptures = blackCaptures
     var newWhiteCaptures = whiteCaptures
     for (r in 1..BOARD_SIZE) {
         for (c in 65..<65 + BOARD_SIZE) {
-            if (this.countLiberties(Position(r, c.toChar())) == 0 && this.boardCells[Position(r, c.toChar())] != null) {
+            if (countLiberties(this, Position(r, c.toChar())) == 0 && this.boardCells[Position(r, c.toChar())] != null && Position(r, c.toChar()) != except) {
                 if (this.boardCells[Position(r, c.toChar())] == Piece.WHITE)
                     newBlackCaptures++
                 else
@@ -131,50 +151,27 @@ fun Board.pass(): Board {
         return this
     }
 
-    if(this.turn == Piece.BLACK){
-        return if (consecutivePasses == 1){
-            Board(
-                boardCells = boardCells,
-                turn = turn.other,
-                isFinished = true,
-                whiteCaptures = whiteCaptures,
-                blackCaptures = blackCaptures,
-                consecutivePasses = consecutivePasses + 1
-            )
-        } else {
-            Board(
-                boardCells = boardCells,
-                turn = turn.other,
-                isFinished = false,
-                whiteCaptures = whiteCaptures,
-                blackCaptures = blackCaptures,
-                consecutivePasses = consecutivePasses + 1
-            )
-        }
+    return if (consecutivePasses == 1) {
+        Board(
+            boardCells = boardCells,
+            turn = turn.other,
+            isFinished = true,
+            whiteCaptures = whiteCaptures,
+            blackCaptures = blackCaptures,
+            consecutivePasses = consecutivePasses + 1
+        )
+    } else {
+        Board(
+            boardCells = boardCells,
+            turn = turn.other,
+            isFinished = false,
+            whiteCaptures = whiteCaptures,
+            blackCaptures = blackCaptures,
+            consecutivePasses = consecutivePasses + 1
+        )
     }
-    else if(this.turn == Piece.WHITE){
-        return if (consecutivePasses == 1) {
-            Board(
-                boardCells = boardCells,
-                turn = turn.other,
-                isFinished = true,
-                whiteCaptures = whiteCaptures,
-                blackCaptures = blackCaptures,
-                consecutivePasses = consecutivePasses + 1
-            )
-        } else {
-            Board(
-                boardCells = boardCells,
-                turn = turn.other,
-                isFinished = false,
-                whiteCaptures = whiteCaptures,
-                blackCaptures = blackCaptures,
-                consecutivePasses = consecutivePasses + 1
-            )
-        }
-    }
-    return this
 }
+
 
 fun Board?.end(): Board? {
     return if(this == null) null

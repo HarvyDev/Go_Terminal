@@ -5,7 +5,7 @@ import isel.tds.go.storage.Storage
 
 
 abstract class Command {
-    open fun execute(args:List<String>, board:Board?): Board = throw IllegalStateException("GameOver")
+    open fun execute(args:List<String>, board:Board?): Board = throw IllegalStateException("Game Over")
     open val isToFinish = false
 }
 
@@ -32,10 +32,6 @@ object Resign: Command() {
         return board.resign()
     }
 }
-
-//object Exit: Command() {
-//    override val isToFinish = true
-//}
 
 fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
     return mapOf(
@@ -64,11 +60,8 @@ fun getCommands(storage: Storage<String, Board>): Map<String, Command> {
             }
         },
         "EXIT" to object : Command() {
-            override fun execute(args: List<String>, board: Board?): Board {
-                return Board(isFinished = true)
-            }
             override val isToFinish = true
-         },
+        },
         "RESIGN" to Resign
     )
 }

@@ -65,7 +65,7 @@ class BoardTest {
         sut = sut.play("2i".toPosition())
         sut = sut.play("1i".toPosition())
         sut = sut.play("1h".toPosition())
-        sut = sut.clean()
+        sut = sut.clean(null)
         assertEquals(null, sut.boardCells["1i".toPosition()])
     }
 
@@ -75,7 +75,7 @@ class BoardTest {
         sut = sut.play("2a".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("1b".toPosition())
-        sut = sut.clean()
+        sut = sut.clean(null)
         assertEquals(null, sut.boardCells["1a".toPosition()])
     }
 
@@ -85,7 +85,7 @@ class BoardTest {
         sut = sut.play("9h".toPosition())
         sut = sut.play("9i".toPosition())
         sut = sut.play("8i".toPosition())
-        sut = sut.clean()
+        sut = sut.clean(null)
         assertEquals(null, sut.boardCells["9i".toPosition()])
     }
     @Test
@@ -94,7 +94,7 @@ class BoardTest {
         sut = sut.play("9b".toPosition())
         sut = sut.play("9a".toPosition())
         sut = sut.play("8a".toPosition())
-        sut = sut.clean()
+        sut = sut.clean(null)
         assertEquals(null, sut.boardCells["9a".toPosition()])
     }
 
@@ -135,5 +135,27 @@ class BoardTest {
         sut = sut.play("1f".toPosition())
         sut = sut.play("8a".toPosition())
         assertTrue(sut.isSuicide("9a".toPosition()))
+    }
+
+    @Test
+    fun `has liberties after play test`() {
+        var sut = Board()
+        sut = sut.play("3f".toPosition()) // black
+        sut = sut.play("2h".toPosition()) // white
+        sut = sut.play("2g".toPosition()) // black
+        sut = sut.play("3i".toPosition()) // white
+        sut = sut.play("3h".toPosition()) // black
+        sut = sut.play("4h".toPosition()) // white
+        sut = sut.play("4g".toPosition()) // black
+        assertTrue(sut.hasLibertiesAfterPlay("3G".toPosition()))
+    }
+
+    @Test
+    fun `clean except`() {
+        var sut = Board()
+        sut = sut.play("3f".toPosition()) // black
+        sut = sut.play("2h".toPosition()) // white
+        sut.clean("3f".toPosition())
+        assertTrue(sut.boardCells["3f".toPosition()] != null)
     }
 }
