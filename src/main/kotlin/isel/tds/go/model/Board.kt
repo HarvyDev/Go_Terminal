@@ -125,7 +125,7 @@ fun Board.isSuicide(pos: Position): Boolean{
             isFinished,
             whiteCaptures,
             blackCaptures,
-            consecutivePasses
+            lastWasPast
         ).exploreLiberties(pos,pos, mutableSetOf())
         // Caso esta não tenha liberdades, significará que posicionar uma peça nessa posição resulta em suicidio.
         return liberties == 0
