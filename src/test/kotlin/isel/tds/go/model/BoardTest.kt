@@ -108,6 +108,7 @@ class BoardTest {
         sut = sut.play("7d".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("8e".toPosition())
+        sut.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
@@ -125,6 +126,7 @@ class BoardTest {
         sut = sut.play("7e".toPosition())
         sut = sut.play("1h".toPosition())
         sut = sut.play("8e".toPosition())
+        sut.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
@@ -134,6 +136,7 @@ class BoardTest {
         sut = sut.play("9b".toPosition())
         sut = sut.play("1f".toPosition())
         sut = sut.play("8a".toPosition())
+        sut.show()
         assertTrue(sut.isSuicide("9a".toPosition()))
     }
 
@@ -158,4 +161,29 @@ class BoardTest {
         sut.clean("3f".toPosition())
         assertTrue(sut.boardCells["3f".toPosition()] != null)
     }
+
+    @Test
+    fun `two players pass consecutively`() {
+        var sut = Board()
+        sut = sut.pass()
+        sut = sut.pass()
+        assertTrue(sut.isFinished)
+    }
+
+    @Test
+    fun `one player passes, the other plays, and the first passes, game doesn't end`() {
+        var sut = Board()
+        sut = sut.pass()
+        sut = sut.play("3f".toPosition())
+        sut = sut.pass()
+        assertFalse(sut.isFinished)
+    }
+
+    @Test
+    fun `one player resigns`() {
+        var sut = Board()
+        sut = sut.resign()
+        assertTrue(sut.isFinished)
+    }
+
 }
