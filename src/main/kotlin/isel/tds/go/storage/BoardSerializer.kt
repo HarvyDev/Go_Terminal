@@ -6,7 +6,7 @@ object BoardSerializer: Serializer<Board> {
     override fun serialize(data: Board): String =
         data.boardCells.entries.joinToString("|") { (position, piece) ->
             "${position.row}${position.col}:$piece"
-        } + "|" + "${data.turn}:${data.isFinished}:${data.whiteCaptures}:${data.blackCaptures}:${data.consecutivePasses}"
+        } + "|" + "${data.turn}:${data.isFinished}:${data.whiteCaptures}:${data.blackCaptures}:${data.lastWasPast}"
 
     override fun deserialize(data: String): Board {
         val plays = data.split("|")
@@ -25,7 +25,7 @@ object BoardSerializer: Serializer<Board> {
             isFinished = gameInfo[1].toBoolean(),
             whiteCaptures = gameInfo[2].toInt(),
             blackCaptures = gameInfo[3].toInt(),
-            consecutivePasses = gameInfo[4].toInt()
+            lastWasPast = gameInfo[4].toBoolean()
         )
     }
 }

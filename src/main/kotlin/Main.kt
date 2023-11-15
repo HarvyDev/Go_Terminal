@@ -12,6 +12,7 @@ fun main() {
         val commands = getCommands(storage)
 
         while(true){
+            board?.score()
             board = board?.end()
             val (name, args) = readCommandLine()
             val cmd = commands[name]

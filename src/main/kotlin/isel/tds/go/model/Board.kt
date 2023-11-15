@@ -18,7 +18,7 @@ class Board(
     val isFinished: Boolean = false,
     val whiteCaptures: Int = 0,
     val blackCaptures: Int = 0,
-    val consecutivePasses: Int = 0
+    val lastWasPast: Boolean = false,
 )
 
 fun Board.canPlay(pos:Position): Boolean =
@@ -43,7 +43,7 @@ fun Board.play(pos:Position):Board {
             isFinished = true,
             whiteCaptures = whiteCaptures,
             blackCaptures = blackCaptures,
-            consecutivePasses = consecutivePasses
+            lastWasPast = false
         ).clean(pos)
     }
 
@@ -56,14 +56,14 @@ fun Board.play(pos:Position):Board {
         isFinished = isFinished,
         whiteCaptures = whiteCaptures,
         blackCaptures = blackCaptures,
-        consecutivePasses = consecutivePasses
+        lastWasPast = false
     ).clean(null)
 }
 
 fun Board.hasLibertiesAfterPlay(pos:Position): Boolean {
     val newBoardCells = boardCells.toMutableMap()
     newBoardCells[pos] = this.turn
-    return Board(newBoardCells, turn, isFinished, whiteCaptures, blackCaptures, consecutivePasses).clean(null).play(pos).exploreLiberties(pos,pos, mutableSetOf()) != 0
+    return Board(newBoardCells, turn, isFinished, whiteCaptures, blackCaptures, lastWasPast).clean(null).play(pos).exploreLiberties(pos,pos, mutableSetOf()) != 0
 }
 
 
@@ -142,7 +142,7 @@ fun Board.clean(except: Position?): Board {
             }
         }
     }
-    return Board(newBoardCells, turn, isFinished ,whiteCaptures = newWhiteCaptures, blackCaptures = newBlackCaptures,consecutivePasses )
+    return Board(newBoardCells, turn, isFinished ,whiteCaptures = newWhiteCaptures, blackCaptures = newBlackCaptures, lastWasPast )
 }
 
 fun Board.pass(): Board {
@@ -151,14 +151,14 @@ fun Board.pass(): Board {
         return this
     }
 
-    return if (consecutivePasses == 1) {
+    return if (lastWasPast) {
         Board(
             boardCells = boardCells,
             turn = turn.other,
             isFinished = true,
             whiteCaptures = whiteCaptures,
             blackCaptures = blackCaptures,
-            consecutivePasses = consecutivePasses + 1
+            lastWasPast = true
         )
     } else {
         Board(
@@ -167,7 +167,7 @@ fun Board.pass(): Board {
             isFinished = false,
             whiteCaptures = whiteCaptures,
             blackCaptures = blackCaptures,
-            consecutivePasses = consecutivePasses + 1
+            lastWasPast = true
         )
     }
 }
@@ -185,5 +185,61 @@ fun Board.resign(): Board =
         isFinished = true,
         whiteCaptures = whiteCaptures,
         blackCaptures = blackCaptures,
-        consecutivePasses = consecutivePasses
+        lastWasPast = false
     )
+
+
+fun Board.score() {
+
+    var whiteScore = whiteCaptures
+    var blackScore = blackCaptures.toDouble()
+
+    if (isFinished) {
+        for (r in 1..BOARD_SIZE) {
+            for (c in 65..<65 + BOARD_SIZE) {
+                if (boardCells[Position(r, c.toChar())] == null) {
+                    val x = isSurrounded(Position(r, c.toChar()))
+
+                    if (x == Piece.WHITE) whiteScore++
+                    else if (x == Piece.BLACK) blackScore++
+                }
+            }
+        }
+        when(BOARD_SIZE){
+            9 -> blackScore -= 3.5
+            13 -> blackScore -= 4.5
+            19 -> blackScore -= 5.5
+        }
+        return if (whiteScore > blackScore) println("The winner is player 0 (White) with score $whiteScore - $blackScore")
+        else println("The winner is player # (Black) with score $blackScore - $whiteScore")
+    }
+}
+
+fun Board.isSurrounded(pos: Position): Piece? {
+
+    var visited = mutableSetOf<Position>()
+    var piece = mutableSetOf<Piece>()
+
+
+    fun search(p: Position) {
+        visited.add(p)
+        val adjacentPos = p.getAdjacentPositions()
+
+        for (adjacent in adjacentPos) {
+            if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
+                if (boardCells[adjacent] == null) search(adjacent)
+                else if (boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
+                else if (boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
+            }
+        }
+    }
+    search(pos)
+
+    return if(piece.contains(Piece.BLACK) && !piece.contains(Piece.WHITE)) Piece.BLACK
+    else if(piece.contains(Piece.WHITE) && !piece.contains(Piece.BLACK)) Piece.WHITE
+    else null
+}
+
+
+
+
