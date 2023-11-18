@@ -182,9 +182,17 @@ fun Board.pass(): Board {
 
 fun Board?.end(): Board? {
     return if(this == null) null
-    else if (isFinished) null else this
+    else if (isFinished) {
+        val (whiteScore, blackScore) = this.score()
+        if (whiteScore > blackScore) {
+            println("The winner is player 0 (White) with a score of $whiteScore - $blackScore")
+        } else if (blackScore > whiteScore) {
+            println("The winner is player # (Black) with a score of $blackScore - $whiteScore")
+        }
+        null
+    }
+    else this
 }
-
 fun Board.resign(): Board =
     Board(
         boardCells = boardCells,
@@ -196,30 +204,31 @@ fun Board.resign(): Board =
     )
 
 
-fun Board.score() {
+fun Board.score(): Pair<Int, Double> {
 
     var whiteScore = whiteCaptures
     var blackScore = blackCaptures.toDouble()
 
-    if (isFinished) {
-        for (r in 1..BOARD_SIZE) {
-            for (c in 65..<65 + BOARD_SIZE) {
-                if (boardCells[Position(r, c.toChar())] == null) {
-                    val x = isSurrounded(Position(r, c.toChar()))
+    //Vamos precurer todas as peças do tabuleiro
+    for (r in 1..BOARD_SIZE) {
+        for (c in 65..<65 + BOARD_SIZE) {
+            //Caso uma seja null iremos chamar a função isSurrounded para verificar se está rodeada
+            if (boardCells[Position(r, c.toChar())] == null) {
+                val x = isSurrounded(Position(r, c.toChar()))
 
-                    if (x == Piece.WHITE) whiteScore++
-                    else if (x == Piece.BLACK) blackScore++
-                }
+                //Se esta estiver rodeada, iremos incrementar o score do jogador que a rodeou
+                if (x == Piece.WHITE) whiteScore++
+                else if (x == Piece.BLACK) blackScore++
             }
         }
-        when(BOARD_SIZE){
-            9 -> blackScore -= 3.5
-            13 -> blackScore -= 4.5
-            19 -> blackScore -= 5.5
-        }
-        return if (whiteScore > blackScore) println("The winner is player 0 (White) with score $whiteScore - $blackScore")
-        else println("The winner is player # (Black) with score $blackScore - $whiteScore")
+       }
+    //Dependendo do tamanho do tabuleiro iremos retirar pontos ao score do jogador preto
+    when(BOARD_SIZE){
+        9 -> blackScore -= 3.5
+        13 -> blackScore -= 4.5
+        19 -> blackScore -= 5.5
     }
+    return Pair(whiteScore, blackScore)
 }
 
 fun Board.isSurrounded(pos: Position): Piece? {
@@ -230,11 +239,16 @@ fun Board.isSurrounded(pos: Position): Piece? {
 
     fun search(p: Position) {
         visited.add(p)
+        //Vamos buscar as posições adjacentes
         val adjacentPos = p.getAdjacentPositions()
 
+        //Para cada posição adjacente iremos verificar se esta já foi visitada e se é válida
         for (adjacent in adjacentPos) {
             if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
+
+                //Se esta for null iremos chamar a função search para continuar a verificação
                 if (boardCells[adjacent] == null) search(adjacent)
+                //Se esta for uma peça iremos adicionar ao set de peças
                 else if (boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
                 else if (boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
             }
@@ -242,6 +256,7 @@ fun Board.isSurrounded(pos: Position): Piece? {
     }
     search(pos)
 
+    //Vamos verificar se o espaço está redeado por 1 só tipo de peça
     return if(piece.contains(Piece.BLACK) && !piece.contains(Piece.WHITE)) Piece.BLACK
     else if(piece.contains(Piece.WHITE) && !piece.contains(Piece.BLACK)) Piece.WHITE
     else null

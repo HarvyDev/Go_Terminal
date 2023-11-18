@@ -12,7 +12,6 @@ fun main() {
         val commands = getCommands(storage)
 
         while(true){
-            board?.score()
             board = board?.end()
             val (name, args) = readCommandLine()
             val cmd = commands[name]
@@ -29,18 +28,10 @@ fun main() {
                     println(e.message)
                 }
                 board?.show()
-                println("It's" + " ${board?.turn?.symbol}" + "'s" + " turn")
-                println("Captures: Black: ${board?.blackCaptures}, White: ${board?.whiteCaptures}")
+                println("Turn: ${board?.turn?.symbol}(${board?.turn})   Captures: #=${board?.blackCaptures}  0=${board?.whiteCaptures}")
                 println()
             }
         }
     }
 }
-
-
-
-
-
-
-
 

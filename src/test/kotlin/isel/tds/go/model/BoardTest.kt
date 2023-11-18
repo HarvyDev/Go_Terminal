@@ -9,7 +9,6 @@ class BoardTest {
         sut.show()
     }
 
-
     @Test
     fun `show board with pieces`() {
         var sut = Board()
