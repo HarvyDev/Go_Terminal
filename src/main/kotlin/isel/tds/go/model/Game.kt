@@ -58,16 +58,29 @@ fun Game.play(pos:Position): Game {
 }
 
 fun Game.hasLibertiesAfterPlay(pos:Position): Boolean {
+
+    val leftPiece = this.board.boardCells[Position(pos.row, pos.col - 1)]
+    val rightPiece = this.board.boardCells[Position(pos.row, pos.col + 1)]
+    val upperPiece = this.board.boardCells[Position(pos.row - 1, pos.col)]
+    val lowerPiece = this.board.boardCells[Position(pos.row + 1, pos.col)]
+
     val newBoardCells = this.board.boardCells.toMutableMap()
     newBoardCells[pos] = this.turn
-    return Game(
+
+    val newGame = Game(
         board = Board(newBoardCells),
         turn = turn,
         isFinished = isFinished,
         whiteScore = whiteScore,
         blackScore = blackScore,
         lastWasPast = lastWasPast
-    ).clean(null).play(pos).exploreLiberties(pos,pos, mutableSetOf()) != 0
+    ).clean(null)
+
+    return !(newGame.board.boardCells[Position(pos.row, pos.col - 1)] == leftPiece &&
+            newGame.board.boardCells[Position(pos.row, pos.col + 1)] == rightPiece &&
+            newGame.board.boardCells[Position(pos.row - 1, pos.col)] == upperPiece &&
+            newGame.board.boardCells[Position(pos.row + 1, pos.col)] == lowerPiece)
+
 }
 
 fun countLiberties(game:Game, pos:Position): Int {
