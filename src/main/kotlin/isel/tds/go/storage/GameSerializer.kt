@@ -2,13 +2,13 @@ package isel.tds.go.storage
 
 import isel.tds.go.model.*
 
-object BoardSerializer: Serializer<Board> {
-    override fun serialize(data: Board): String =
-        data.boardCells.entries.joinToString("|") { (position, piece) ->
+object GameSerializer: Serializer<Game> {
+    override fun serialize(data: Game): String =
+        data.board.boardCells.entries.joinToString("|") { (position, piece) ->
             "${position.row}${position.col}:$piece"
-        } + "|" + "${data.turn}:${data.isFinished}:${data.whiteCaptures}:${data.blackCaptures}:${data.lastWasPast}"
+        } + "|" + "${data.turn}:${data.isFinished}:${data.whiteScore}:${data.blackScore}:${data.lastWasPast}"
 
-    override fun deserialize(data: String): Board {
+    override fun deserialize(data: String): Game {
         val plays = data.split("|")
         val newCells = mutableMapOf<Position, Piece?>()
         for (play in 0..plays.size-2) {
@@ -19,12 +19,12 @@ object BoardSerializer: Serializer<Board> {
             }
         }
         val gameInfo = plays[plays.size - 1].split(':')
-        return Board(
-            boardCells = newCells,
+        return Game(
+            board = Board(newCells),
             turn = Piece.valueOf(gameInfo[0]),
             isFinished = gameInfo[1].toBoolean(),
-            whiteCaptures = gameInfo[2].toInt(),
-            blackCaptures = gameInfo[3].toInt(),
+            whiteScore = gameInfo[2].toInt(),
+            blackScore = gameInfo[3].toInt(),
             lastWasPast = gameInfo[4].toBoolean()
         )
     }

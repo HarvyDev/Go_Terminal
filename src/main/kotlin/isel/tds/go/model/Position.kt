@@ -45,3 +45,35 @@ fun String.toPosition(): Position {
 
     return Position(row ?: -1, col)
 }
+
+
+fun Position.isSurrounded(board: Board): Piece? {
+
+    val visited = mutableSetOf<Position>()
+    val piece = mutableSetOf<Piece>()
+
+
+    fun search(p: Position) {
+        visited.add(p)
+        //Vamos buscar as posições adjacentes
+        val adjacentPos = p.getAdjacentPositions()
+
+        //Para cada posição adjacente iremos verificar se esta já foi visitada e se é válida
+        for (adjacent in adjacentPos) {
+            if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
+
+                //Se esta for null iremos chamar a função search para continuar a verificação
+                if (board.boardCells[adjacent] == null) search(adjacent)
+                //Se esta for uma peça iremos adicionar ao set de peças
+                else if (board.boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
+                else if (board.boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
+            }
+        }
+    }
+    search(this)
+
+    //Vamos verificar se o espaço está redeado por 1 só tipo de peça
+    return if(piece.contains(Piece.BLACK) && !piece.contains(Piece.WHITE)) Piece.BLACK
+    else if(piece.contains(Piece.WHITE) && !piece.contains(Piece.BLACK)) Piece.WHITE
+    else null
+}

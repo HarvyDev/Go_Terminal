@@ -1,5 +1,6 @@
 package isel.tds.go.model
 
+import isel.tds.go.view.show
 import kotlin.test.*
 
 class BoardTest {
@@ -11,17 +12,17 @@ class BoardTest {
 
     @Test
     fun `show board with pieces`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play(Position(3,'C'))
         sut = sut.play(Position(3,'D'))
         assertFalse(sut.canPlay(Position(3,'C')))
         assertFalse(sut.canPlay(Position(3, 'D')))
-        sut.show()
+        sut.board.show()
     }
 
     @Test
     fun `test play edge cases exception`() {
-        var sut = Board()
+        var sut = Game()
         assertFailsWith<IllegalArgumentException>{
             sut = sut.play(Position(-1, 'A'))
         }
@@ -37,21 +38,21 @@ class BoardTest {
     }
     @Test
     fun `test play edge cases`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9a".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("9i".toPosition())
         sut = sut.play("1i".toPosition())
-        assertEquals(sut.boardCells["9a".toPosition()], Piece.BLACK)
-        assertEquals(sut.boardCells["1a".toPosition()], Piece.WHITE)
-        assertEquals(sut.boardCells["9i".toPosition()], Piece.BLACK)
-        assertEquals(sut.boardCells["1i".toPosition()], Piece.WHITE)
+        assertEquals(sut.board.boardCells["9a".toPosition()], Piece.BLACK)
+        assertEquals(sut.board.boardCells["1a".toPosition()], Piece.WHITE)
+        assertEquals(sut.board.boardCells["9i".toPosition()], Piece.BLACK)
+        assertEquals(sut.board.boardCells["1i".toPosition()], Piece.WHITE)
     }
 
 
     @Test
     fun `can play`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play(Position(1, 'A'))
         sut = sut.play(Position(2, 'A'))
         assertFalse(sut.canPlay(Position(1,'A')))
@@ -60,46 +61,46 @@ class BoardTest {
 
     @Test
     fun `kill stone in bottom right corner`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("2i".toPosition())
         sut = sut.play("1i".toPosition())
         sut = sut.play("1h".toPosition())
         sut = sut.clean(null)
-        assertEquals(null, sut.boardCells["1i".toPosition()])
+        assertEquals(null, sut.board.boardCells["1i".toPosition()])
     }
 
     @Test
     fun `kill stone in bottom left corner`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("2a".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("1b".toPosition())
         sut = sut.clean(null)
-        assertEquals(null, sut.boardCells["1a".toPosition()])
+        assertEquals(null, sut.board.boardCells["1a".toPosition()])
     }
 
     @Test
     fun `kill stone in top right corner`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9h".toPosition())
         sut = sut.play("9i".toPosition())
         sut = sut.play("8i".toPosition())
         sut = sut.clean(null)
-        assertEquals(null, sut.boardCells["9i".toPosition()])
+        assertEquals(null, sut.board.boardCells["9i".toPosition()])
     }
     @Test
     fun `kill stone in top left corner`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9b".toPosition())
         sut = sut.play("9a".toPosition())
         sut = sut.play("8a".toPosition())
         sut = sut.clean(null)
-        assertEquals(null, sut.boardCells["9a".toPosition()])
+        assertEquals(null, sut.board.boardCells["9a".toPosition()])
     }
 
     @Test
     fun `simple suicide 1 white piece surrounded by 4 black`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9d".toPosition())
         sut = sut.play("1e".toPosition())
         sut = sut.play("8c".toPosition())
@@ -107,13 +108,13 @@ class BoardTest {
         sut = sut.play("7d".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("8e".toPosition())
-        sut.show()
+        sut.board.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
     @Test
     fun `group suicide`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9d".toPosition())
         sut = sut.play("1e".toPosition())
         sut = sut.play("8c".toPosition())
@@ -125,23 +126,23 @@ class BoardTest {
         sut = sut.play("7e".toPosition())
         sut = sut.play("1h".toPosition())
         sut = sut.play("8e".toPosition())
-        sut.show()
+        sut.board.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
     @Test
     fun `corner suicide`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("9b".toPosition())
         sut = sut.play("1f".toPosition())
         sut = sut.play("8a".toPosition())
-        sut.show()
+        sut.board.show()
         assertTrue(sut.isSuicide("9a".toPosition()))
     }
 
     @Test
     fun `has liberties after play test`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("3f".toPosition()) // black
         sut = sut.play("2h".toPosition()) // white
         sut = sut.play("2g".toPosition()) // black
@@ -154,16 +155,16 @@ class BoardTest {
 
     @Test
     fun `clean except`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("3f".toPosition()) // black
         sut = sut.play("2h".toPosition()) // white
         sut.clean("3f".toPosition())
-        assertTrue(sut.boardCells["3f".toPosition()] != null)
+        assertTrue(sut.board.boardCells["3f".toPosition()] != null)
     }
 
     @Test
     fun `two players pass consecutively`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.pass()
         sut = sut.pass()
         assertTrue(sut.isFinished)
@@ -171,7 +172,7 @@ class BoardTest {
 
     @Test
     fun `one player passes, the other plays, and the first passes, game doesn't end`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.pass()
         sut = sut.play("3f".toPosition())
         sut = sut.pass()
@@ -180,7 +181,7 @@ class BoardTest {
 
     @Test
     fun `one player resigns`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.resign()
         assertTrue(sut.isFinished)
     }

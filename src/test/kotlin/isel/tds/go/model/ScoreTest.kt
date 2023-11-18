@@ -6,19 +6,19 @@ class StoreTest {
 
     @Test
     fun `Score empty Board`() {
-        val sut = Board()
+        val sut = Game()
         assertEquals(Pair(0,-3.5), sut.score())
     }
 
     @Test
     fun `Score with 1 Black Piece`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("1A".toPosition())
         assertEquals(Pair(0,76.5), sut.score())
     }
     @Test
     fun `Score with 1 White Piece`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.pass()
         sut = sut.play("1A".toPosition())
         assertEquals(Pair(80,-3.5), sut.score())
@@ -26,7 +26,7 @@ class StoreTest {
 
     @Test
     fun `Score with 1 of each Piece`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("1A".toPosition())
         sut = sut.play("1B".toPosition())
         assertEquals(Pair(0,-3.5), sut.score())
@@ -34,7 +34,7 @@ class StoreTest {
 
     @Test
     fun `Score in the borders`() {
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("3A".toPosition())
         sut = sut.play("9H".toPosition())
         sut = sut.play("2B".toPosition())
@@ -45,7 +45,7 @@ class StoreTest {
 
     @Test
     fun `Score with captures for black`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("3A".toPosition())
         sut = sut.play("9G".toPosition())
         sut = sut.play("2B".toPosition())
@@ -62,7 +62,7 @@ class StoreTest {
 
     @Test
     fun `Score with captures for white`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("8A".toPosition())
         sut = sut.play("1H".toPosition())
         sut = sut.play("1I".toPosition())
@@ -75,7 +75,7 @@ class StoreTest {
 
     @Test
     fun `Score with captures for both sides`(){
-        var sut = Board()
+        var sut = Game()
         sut = sut.play("1A".toPosition())
         sut = sut.play("2A".toPosition())
         sut = sut.play("5E".toPosition())
