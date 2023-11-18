@@ -185,9 +185,9 @@ fun Board?.end(): Board? {
     else if (isFinished) {
         val (whiteScore, blackScore) = this.score()
         if (whiteScore > blackScore) {
-            println("The winner is player 0 (White) with a score of $whiteScore - $blackScore")
+            println("The winner is player 0 (White). Score = $whiteScore to $blackScore")
         } else if (blackScore > whiteScore) {
-            println("The winner is player # (Black) with a score of $blackScore - $whiteScore")
+            println("The winner is player # (Black). Score = $blackScore to $whiteScore")
         }
         null
     }
@@ -214,7 +214,7 @@ fun Board.score(): Pair<Int, Double> {
         for (c in 65..<65 + BOARD_SIZE) {
             //Caso uma seja null iremos chamar a função isSurrounded para verificar se está rodeada
             if (boardCells[Position(r, c.toChar())] == null) {
-                val x = isSurrounded(Position(r, c.toChar()))
+                val x = Position(r, c.toChar()).isSurrounded(this)
 
                 //Se esta estiver rodeada, iremos incrementar o score do jogador que a rodeou
                 if (x == Piece.WHITE) whiteScore++
@@ -231,10 +231,10 @@ fun Board.score(): Pair<Int, Double> {
     return Pair(whiteScore, blackScore)
 }
 
-fun Board.isSurrounded(pos: Position): Piece? {
+fun Position.isSurrounded(board: Board): Piece? {
 
-    var visited = mutableSetOf<Position>()
-    var piece = mutableSetOf<Piece>()
+    val visited = mutableSetOf<Position>()
+    val piece = mutableSetOf<Piece>()
 
 
     fun search(p: Position) {
@@ -247,14 +247,14 @@ fun Board.isSurrounded(pos: Position): Piece? {
             if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
 
                 //Se esta for null iremos chamar a função search para continuar a verificação
-                if (boardCells[adjacent] == null) search(adjacent)
+                if (board.boardCells[adjacent] == null) search(adjacent)
                 //Se esta for uma peça iremos adicionar ao set de peças
-                else if (boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
-                else if (boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
+                else if (board.boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
+                else if (board.boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
             }
         }
     }
-    search(pos)
+    search(this)
 
     //Vamos verificar se o espaço está redeado por 1 só tipo de peça
     return if(piece.contains(Piece.BLACK) && !piece.contains(Piece.WHITE)) Piece.BLACK
