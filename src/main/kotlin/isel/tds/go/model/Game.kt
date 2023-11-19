@@ -9,11 +9,15 @@ class Game (
     val lastWasPast: Boolean = false
     )
 
-fun Game.canPlay(pos:Position): Boolean =
+fun Game.canPlay(pos:Position): Boolean = // Verificar se a poisição está dentro dos limites do tabuleiro e se está vazia
     pos.row in 1..BOARD_SIZE && pos.col in 'A'..<'A' + BOARD_SIZE &&
             this.board.boardCells[pos] == null
 
 fun Game.play(pos:Position): Game {
+    if (isFinished) {
+        println("Game is finished!")
+        return this
+    }
     require(pos.row in 1..BOARD_SIZE) { "Invalid position" }
     require(pos.col in 'A'..<'A' + BOARD_SIZE) { "Invalid position" }
 
@@ -22,25 +26,30 @@ fun Game.play(pos:Position): Game {
         return this
     }
 
+    // Verificar se a jogada é suicidio
     val isSuicide = this.isSuicide(pos)
+    // Verificar se a peça tem liberdades depois de ser jogada
     val hasLibertiesAfterPlay = this.hasLibertiesAfterPlay(pos)
 
+    // Se for jogada suicida e se não tiver liberdades depois de ser jogada, a jogada é inválida
     if (isSuicide && !hasLibertiesAfterPlay) {
         println("Invalid play, suicide!")
         return this
     }
 
-    else if (isSuicide) {
+    // Caso tenha liberdades depois de ser jogada
+    else if (hasLibertiesAfterPlay) {
         val newBoardCells = this.board.boardCells.toMutableMap()
         newBoardCells[pos] = this.turn
 
+        // Retornamos o novo Game, com a board alterada e com as devidas eliminações
         return Game (
             board = Board(newBoardCells),
             turn = turn.other,
             isFinished = false,
             whiteScore = whiteScore,
             blackScore = blackScore,
-            lastWasPast = true
+            lastWasPast = false
         ).clean(pos)
     }
 
@@ -225,7 +234,7 @@ fun Game.pass(): Game {
         Game (
             board = this.board,
             turn = turn.other,
-            isFinished = false,
+            isFinished = this.isFinished,
             whiteScore = whiteScore,
             blackScore = blackScore,
             lastWasPast = true

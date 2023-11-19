@@ -2,9 +2,14 @@ package isel.tds.go.view
 
 import isel.tds.go.model.BOARD_SIZE
 import isel.tds.go.model.Board
+import isel.tds.go.model.Game
 import isel.tds.go.model.Position
 
-fun Board.show() {
+fun Game.show() {
+    if (isFinished) {
+        println("Game is finished!")
+        return
+    }
     var firstLine = " "
     for (i in 0..<BOARD_SIZE) {
         firstLine += " " + ('A' + i) + " "
@@ -15,11 +20,12 @@ fun Board.show() {
             println()
             print(pos.row)
         }
-        if (boardCells[pos] == null) {
+        if (board.boardCells[pos] == null) {
             print(" . ")
         } else {
-            print(" ${boardCells[pos]?.symbol} ")
+            print(" ${board.boardCells[pos]?.symbol} ")
         }
     }
     println()
+    println("Turn: ${turn.symbol}(${turn}) Captures: #=${blackScore}  0=${whiteScore}")
 }

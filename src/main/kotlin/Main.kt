@@ -23,13 +23,12 @@ fun main() {
                 try {
                     if (cmd.isToFinish) break
                     game = cmd.execute(args, game)
-
                 }
                 catch (e: Throwable) {
                     println(e.message)
                 }
-                game.board.show()
-                println("Turn: ${game.turn.symbol}(${game.turn}) Captures: #=${game.blackScore}  0=${game.whiteScore}")
+                game.show()
+
                 println()
             }
         }
