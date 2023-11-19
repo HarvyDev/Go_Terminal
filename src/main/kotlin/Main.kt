@@ -8,12 +8,11 @@ import isel.tds.go.view.show
 
 fun main() {
     MongoDriver("Go").use { driver ->
-        var game: Game = Game()
+        var game = Game()
         val storage = MongoStorage<String, Game>("saves", driver, GameSerializer)
         val commands = getCommands(storage)
 
         while(true){
-            game = game.end()
             val (name, args) = readCommandLine()
             val cmd = commands[name]
             if (cmd == null) {
@@ -27,7 +26,8 @@ fun main() {
                 catch (e: Throwable) {
                     println(e.message)
                 }
-                game.show()
+                if (!game.isFinished)
+                    game.show()
 
                 println()
             }

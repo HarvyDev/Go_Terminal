@@ -7,7 +7,6 @@ class BoardTest {
     @Test
     fun `show empty board`() {
         val sut = Board()
-        sut.show()
     }
 
     @Test
@@ -17,7 +16,6 @@ class BoardTest {
         sut = sut.play(Position(3,'D'))
         assertFalse(sut.canPlay(Position(3,'C')))
         assertFalse(sut.canPlay(Position(3, 'D')))
-        sut.board.show()
     }
 
     @Test
@@ -108,7 +106,6 @@ class BoardTest {
         sut = sut.play("7d".toPosition())
         sut = sut.play("1a".toPosition())
         sut = sut.play("8e".toPosition())
-        sut.board.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
@@ -126,7 +123,6 @@ class BoardTest {
         sut = sut.play("7e".toPosition())
         sut = sut.play("1h".toPosition())
         sut = sut.play("8e".toPosition())
-        sut.board.show()
         assertTrue(sut.isSuicide("8d".toPosition()))
     }
 
@@ -136,7 +132,6 @@ class BoardTest {
         sut = sut.play("9b".toPosition())
         sut = sut.play("1f".toPosition())
         sut = sut.play("8a".toPosition())
-        sut.board.show()
         assertTrue(sut.isSuicide("9a".toPosition()))
     }
 

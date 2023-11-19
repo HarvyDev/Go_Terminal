@@ -165,20 +165,19 @@ fun Game.clean(except: Position?): Game {
     )
 }
 
-fun Game.end(): Game {
-    return if (isFinished) {
-        val (whiteScore, blackScore) = this.score()
-        if (whiteScore > blackScore) {
-            println("The winner is player 0 (White). Score = $whiteScore to $blackScore")
-        } else if (blackScore > whiteScore) {
-            println("The winner is player # (Black). Score = $blackScore to $whiteScore")
-        }
-        this
+fun Game.end() {
+
+    val (whiteScore, blackScore) = this.score()
+    if (whiteScore > blackScore) {
+        println("The winner is player 0 (White). Score = $whiteScore to $blackScore")
+    } else if (blackScore > whiteScore) {
+        println("The winner is player # (Black). Score = $blackScore to $whiteScore")
     }
-    else this
+
 }
-fun Game.resign(): Game =
-    Game(
+fun Game.resign(): Game {
+    this.end()
+    return Game(
         board = Board(board.boardCells),
         turn = turn.other,
         isFinished = true,
@@ -186,6 +185,8 @@ fun Game.resign(): Game =
         blackScore = blackScore,
         lastWasPast = false
     )
+}
+
 
 
 fun Game.score(): Pair<Int, Double> {
@@ -221,8 +222,9 @@ fun Game.pass(): Game {
         return this
     }
 
-    return if (lastWasPast) {
-        Game (
+    if (lastWasPast) {
+        this.end()
+        return Game (
             board = this.board,
             turn = turn.other,
             isFinished = true,
@@ -231,7 +233,7 @@ fun Game.pass(): Game {
             lastWasPast = true
         )
     } else {
-        Game (
+        return Game (
             board = this.board,
             turn = turn.other,
             isFinished = this.isFinished,

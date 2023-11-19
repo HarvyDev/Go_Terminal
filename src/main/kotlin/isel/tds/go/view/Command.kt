@@ -22,6 +22,7 @@ object Play : Command() {
 object Pass : Command() {
     override fun execute(args: List<String>, game: Game): Game {
         checkNotNull(game.board) { "Game hasn't started" }
+        check(!game.isFinished) { "Game is finished" }
         return game.pass()
     }
 }
@@ -29,6 +30,7 @@ object Pass : Command() {
 object Resign: Command() {
     override fun execute(args: List<String>, game: Game): Game {
         checkNotNull(game.board) { "Game hasn't started" }
+        check(!game.isFinished) { "Game is finished" }
         return game.resign()
     }
 }
