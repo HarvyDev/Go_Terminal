@@ -5,6 +5,11 @@ import isel.tds.go.model.Board
 import isel.tds.go.model.Game
 import isel.tds.go.model.Position
 
+
+/**
+ * This function is used to show the board,
+ * it also shows other game information.
+ */
 fun Game.show() {
     if (isFinished) {
         println("Game is finished!")

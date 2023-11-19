@@ -6,6 +6,9 @@ import isel.tds.go.view.getCommands
 import isel.tds.go.view.readCommandLine
 import isel.tds.go.view.show
 
+/**
+ * This is the main function, it gathers all modules and runs the game.
+ */
 fun main() {
     MongoDriver("Go").use { driver ->
         var game = Game()

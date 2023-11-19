@@ -1,5 +1,9 @@
 package isel.tds.go.model
 
+/**
+ * This class contains information about the game's state.
+ * Such as the board, the turn, the score, etc.
+ */
 class Game (
     val board: Board = Board(),
     val turn: Piece = Piece.BLACK,
@@ -9,10 +13,19 @@ class Game (
     val lastWasPast: Boolean = false
     )
 
+
+/**
+ * This function checks if a position is valid when attempting to play.
+ */
 fun Game.canPlay(pos:Position): Boolean = // Verificar se a poisição está dentro dos limites do tabuleiro e se está vazia
     pos.row in 1..BOARD_SIZE && pos.col in 'A'..<'A' + BOARD_SIZE &&
             this.board.boardCells[pos] == null
 
+
+/**
+ * This function completes a valid play checking if the game has finished and
+ * handles all the playing logic.
+ */
 fun Game.play(pos:Position): Game {
     if (isFinished) {
         println("Game is finished!")
@@ -26,23 +39,23 @@ fun Game.play(pos:Position): Game {
         return this
     }
 
-    // Verificar se a jogada é suicidio
+    // We check if the play is suicide
     val isSuicide = this.isSuicide(pos)
-    // Verificar se a peça tem liberdades depois de ser jogada
+    // We check if a piece has liberties after it's player
     val hasLibertiesAfterPlay = this.hasLibertiesAfterPlay(pos)
 
-    // Se for jogada suicida e se não tiver liberdades depois de ser jogada, a jogada é inválida
+    // If this play is suicide, meaning it has no liberties after being executed then it's not valid
     if (isSuicide && !hasLibertiesAfterPlay) {
         println("Invalid play, suicide!")
         return this
     }
 
-    // Caso tenha liberdades depois de ser jogada
+    // In case the play has liberties after being executed
     else if (hasLibertiesAfterPlay) {
         val newBoardCells = this.board.boardCells.toMutableMap()
         newBoardCells[pos] = this.turn
 
-        // Retornamos o novo Game, com a board alterada e com as devidas eliminações
+        // We return the new game, with the modified board given the eliminations
         return Game (
             board = Board(newBoardCells),
             turn = turn.other,
@@ -66,6 +79,11 @@ fun Game.play(pos:Position): Game {
     ).clean(null)
 }
 
+
+/**
+ * This function is used to determine if a certain position has liberties after it has been played,
+ * so that we can determine if a play is suicide, for example.
+ */
 fun Game.hasLibertiesAfterPlay(pos:Position): Boolean {
 
     val leftPiece = this.board.boardCells[Position(pos.row, pos.col - 1)]
@@ -92,6 +110,10 @@ fun Game.hasLibertiesAfterPlay(pos:Position): Boolean {
 
 }
 
+
+/**
+ * This function is used to count the liberties of a piece in a certain position.
+ */
 fun countLiberties(game:Game, pos:Position): Int {
     val visited = mutableSetOf<Position>()
 
@@ -101,6 +123,10 @@ fun countLiberties(game:Game, pos:Position): Int {
     return 0
 }
 
+/**
+ * This function is used to explore the liberties of a piece in a certain position, it's
+ * used as a helper function for the countLiberties function.
+ */
 private fun Game.exploreLiberties(initialPos: Position, currentPosition: Position, visited: MutableSet<Position>): Int {
     visited.add(currentPosition)
 
@@ -118,6 +144,10 @@ private fun Game.exploreLiberties(initialPos: Position, currentPosition: Positio
     return liberties
 }
 
+
+/**
+ * This function is used to check if a given position, if played, results in suicide.
+ */
 fun Game.isSuicide(pos: Position): Boolean{
     if(pos.isValidPosition() && this.canPlay(pos)) {
         // Criamos uma nova board
@@ -139,6 +169,9 @@ fun Game.isSuicide(pos: Position): Boolean{
     return false
 }
 
+/**
+ * This function is used to return a Game object, with a board that has certain positions cleaned.
+ */
 fun Game.clean(except: Position?): Game {
     val newBoardCells = board.boardCells.toMutableMap()
     var newBlackCaptures = blackScore
@@ -165,6 +198,10 @@ fun Game.clean(except: Position?): Game {
     )
 }
 
+
+/**
+ * This function is used to make the game end.
+ */
 fun Game.end() {
 
     val (whiteScore, blackScore) = this.score()
@@ -175,6 +212,11 @@ fun Game.end() {
     }
 
 }
+
+
+/**
+ * This function handles the resign logic, for when a player wishes to end the game by quitting.
+ */
 fun Game.resign(): Game {
     this.end()
     return Game(
@@ -188,13 +230,15 @@ fun Game.resign(): Game {
 }
 
 
-
+/**
+ * This function is used to calculate the score of the game.
+ */
 fun Game.score(): Pair<Int, Double> {
 
     var whiteScore = whiteScore
     var blackScore = blackScore.toDouble()
 
-    //Vamos precurer todas as peças do tabuleiro
+    //We go through all the pieces in the game
     for (r in 1..BOARD_SIZE) {
         for (c in 65..<65 + BOARD_SIZE) {
             //Caso uma seja null iremos chamar a função isSurrounded para verificar se está rodeada
@@ -207,7 +251,7 @@ fun Game.score(): Pair<Int, Double> {
             }
         }
     }
-    //Dependendo do tamanho do tabuleiro iremos retirar pontos ao score do jogador preto
+    //Depending on the board size we will subtract a certain amount of points from the black player
     when(BOARD_SIZE){
         9 -> blackScore -= 3.5
         13 -> blackScore -= 4.5
@@ -216,6 +260,10 @@ fun Game.score(): Pair<Int, Double> {
     return Pair(whiteScore, blackScore)
 }
 
+
+/**
+ * This function handles the passing logic, if two passes are made in a row the game ends.
+ */
 fun Game.pass(): Game {
     // Check if the game is already finished
     if (isFinished) {

@@ -1,4 +1,8 @@
 package isel.tds.go.model
+
+/**
+ * This class stores the position details for a piece in the board.
+ */
 class Position(val row:Int, val col:Char) {
 
     override fun equals(other: Any?): Boolean {
@@ -24,6 +28,9 @@ class Position(val row:Int, val col:Char) {
     }
 }
 
+/**
+ * This function is used to get the adjacent positions of a given position.
+ */
 fun Position.getAdjacentPositions(): List<Position> {
     return listOf(
         Position(this.row, this.col - 1),
@@ -33,6 +40,9 @@ fun Position.getAdjacentPositions(): List<Position> {
     )
 }
 
+/**
+ * This function is used to check if a position is valid.
+ */
 fun Position.isValidPosition(): Boolean {
     return (this.row in 1..BOARD_SIZE && this.col in 'A'..<'A' + BOARD_SIZE)
 }
@@ -46,7 +56,9 @@ fun String.toPosition(): Position {
     return Position(row ?: -1, col)
 }
 
-
+/**
+ * This function is used to check if a position is surrounded by a single type of piece.
+ */
 fun Position.isSurrounded(board: Board): Piece? {
 
     val visited = mutableSetOf<Position>()
@@ -55,10 +67,10 @@ fun Position.isSurrounded(board: Board): Piece? {
 
     fun search(p: Position) {
         visited.add(p)
-        //Vamos buscar as posições adjacentes
+        // We get the adjacent positions of the current position
         val adjacentPos = p.getAdjacentPositions()
 
-        //Para cada posição adjacente iremos verificar se esta já foi visitada e se é válida
+        //For each adjacent position we will check if it is valid and if it is we will check if it is null or a piece
         for (adjacent in adjacentPos) {
             if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
 
@@ -72,7 +84,7 @@ fun Position.isSurrounded(board: Board): Piece? {
     }
     search(this)
 
-    //Vamos verificar se o espaço está redeado por 1 só tipo de peça
+    // We check if the surrounding piece set contains only one type of piece
     return if(piece.contains(Piece.BLACK) && !piece.contains(Piece.WHITE)) Piece.BLACK
     else if(piece.contains(Piece.WHITE) && !piece.contains(Piece.BLACK)) Piece.WHITE
     else null

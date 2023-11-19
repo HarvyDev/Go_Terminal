@@ -4,11 +4,17 @@ import isel.tds.go.model.*
 import isel.tds.go.storage.Storage
 
 
+/**
+ * This class defines the commands that can be executed by the user.
+ */
 abstract class Command {
     open fun execute(args:List<String>, game:Game): Game = throw IllegalStateException("Game Over")
     open val isToFinish = false
 }
 
+/**
+ * This class defines the command that allows the user to play a piece.
+ */
 object Play : Command() {
     override fun execute(args: List<String>, game: Game): Game {
         checkNotNull(game.board) { "Game hasn't started" }
@@ -19,6 +25,10 @@ object Play : Command() {
     }
 }
 
+/**
+ * This class defines the command that allows the user to pass.
+
+ */
 object Pass : Command() {
     override fun execute(args: List<String>, game: Game): Game {
         checkNotNull(game.board) { "Game hasn't started" }
@@ -27,6 +37,9 @@ object Pass : Command() {
     }
 }
 
+/**
+ * This class defines the command that allows the user to resign.
+ */
 object Resign: Command() {
     override fun execute(args: List<String>, game: Game): Game {
         checkNotNull(game.board) { "Game hasn't started" }
@@ -35,6 +48,9 @@ object Resign: Command() {
     }
 }
 
+/**
+ * This function is used to get the commands that can be executed by the user.
+ */
 fun getCommands(storage: Storage<String, Game>): Map<String, Command> {
     return mapOf(
         "PLAY" to Play,
