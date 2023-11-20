@@ -27,7 +27,6 @@ object Play : Command() {
 
 /**
  * This class defines the command that allows the user to pass.
-
  */
 object Pass : Command() {
     override fun execute(args: List<String>, game: Game): Game {
