@@ -75,9 +75,9 @@ fun Position.isSurrounded(board: Board): Piece? {
         for (adjacent in adjacentPos) {
             if (!visited.contains(adjacent) && adjacent.isValidPosition()) {
 
-                //Se esta for null iremos chamar a função search para continuar a verificação
+                //If the position is null we will call the funtion search keep verifing if the piece is surrounded
                 if (board.boardCells[adjacent] == null) search(adjacent)
-                //Se esta for uma peça iremos adicionar ao set de peças
+                //If in the position is a piece we will add to the set of pieces
                 else if (board.boardCells[adjacent] == Piece.BLACK) piece += Piece.BLACK
                 else if (board.boardCells[adjacent] == Piece.WHITE) piece += Piece.WHITE
             }
