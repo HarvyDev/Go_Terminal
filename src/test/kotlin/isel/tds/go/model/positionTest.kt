@@ -14,7 +14,7 @@ class PositionTest {
     @Test
     fun `test string to position`() {
         val sut = "3B".toPosition()
-        assertEquals(3, sut.row)
+        assertEquals(7, sut.row)
         assertEquals('B', sut.col)
     }
 }

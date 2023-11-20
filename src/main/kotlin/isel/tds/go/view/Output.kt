@@ -23,7 +23,7 @@ fun Game.show() {
     Position.values.forEach { pos ->
         if (pos.col == 'A') {
             println()
-            print(pos.row)
+            print(BOARD_SIZE - pos.row + 1)
         }
         if (board.boardCells[pos] == null) {
             print(" . ")

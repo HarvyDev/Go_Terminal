@@ -17,7 +17,7 @@ class Game (
 /**
  * This function checks if a position is valid when attempting to play.
  */
-fun Game.canPlay(pos:Position): Boolean = // Verificar se a poisição está dentro dos limites do tabuleiro e se está vazia
+fun Game.canPlay(pos:Position): Boolean = //
     pos.row in 1..BOARD_SIZE && pos.col in 'A'..<'A' + BOARD_SIZE &&
             this.board.boardCells[pos] == null
 
@@ -150,11 +150,8 @@ private fun Game.exploreLiberties(initialPos: Position, currentPosition: Positio
  */
 fun Game.isSuicide(pos: Position): Boolean{
     if(pos.isValidPosition() && this.canPlay(pos)) {
-        // Criamos uma nova board
         val newBoard = this.board.boardCells.toMutableMap()
-        // Definimos a posição que estamos tentar jogar na nova board como o turn atual
         newBoard[pos] = this.turn
-        // A partir desta nova board, exploramos as liberdades da peça inserida
         val liberties = Game (
             board = Board(newBoard),
             turn = turn,
@@ -163,7 +160,6 @@ fun Game.isSuicide(pos: Position): Boolean{
             blackScore = blackScore,
             lastWasPast = lastWasPast
         ).exploreLiberties(pos,pos, mutableSetOf())
-        // Caso esta não tenha liberdades, significará que posicionar uma peça nessa posição resulta em suicidio.
         return liberties == 0
     }
     return false
@@ -215,7 +211,7 @@ fun Game.end() {
 
 
 /**
- * This function handles the resign logic, for when a player wishes to end the game by quitting.
+ * This function handles the resign command logic, for when a player wishes to end the game by quitting.
  */
 fun Game.resign(): Game {
     this.end()
@@ -241,11 +237,9 @@ fun Game.score(): Pair<Int, Double> {
     //We go through all the pieces in the game
     for (r in 1..BOARD_SIZE) {
         for (c in 65..<65 + BOARD_SIZE) {
-            //Caso uma seja null iremos chamar a função isSurrounded para verificar se está rodeada
             if (board.boardCells[Position(r, c.toChar())] == null) {
                 val x = Position(r, c.toChar()).isSurrounded(board)
 
-                //Se esta estiver rodeada, iremos incrementar o score do jogador que a rodeou
                 if (x == Piece.WHITE) whiteScore++
                 else if (x == Piece.BLACK) blackScore++
             }

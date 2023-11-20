@@ -14,6 +14,7 @@ fun main() {
         var game = Game()
         val storage = MongoStorage<String, Game>("saves", driver, GameSerializer)
         val commands = getCommands(storage)
+        game.show()
 
         while(true){
             val (name, args) = readCommandLine()

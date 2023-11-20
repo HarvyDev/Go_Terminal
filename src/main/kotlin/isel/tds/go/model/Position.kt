@@ -53,7 +53,9 @@ fun String.toPosition(): Position {
     val row = this.substring(0, letterIndex).toIntOrNull()
     val col = this.substring(letterIndex)[0].uppercaseChar()
 
-    return Position(row ?: -1, col)
+    // return Position(row ?: -1, col)
+    val r = if (row == null) null else (BOARD_SIZE - row + 1)
+    return Position(r ?: - 1, col)
 }
 
 /**
